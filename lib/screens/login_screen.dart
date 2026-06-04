@@ -183,7 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           // Navigator.pushReplacementNamed(context, '/inicio');
                           var respuesta = await Provider.of<ProviderWeb>(context,listen: false).loginWeb(_email.text,_passowrd.text);
                             if(respuesta == true){
-                              print("Logueado exitosamente:_______________________________\n${Provider.of<ProviderWeb>(context,listen: false).datosLogin}");
+                              // print("Logueado exitosamente:_______________________________\n${Provider.of<ProviderWeb>(context,listen: false).datosLogin}");
                               Navigator.pushReplacementNamed(context, '/inicio');
                             }else{
                               print("Usuario no existe o credenciales incorrectas");

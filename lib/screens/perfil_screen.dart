@@ -21,6 +21,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
   bool estado = true;
   @override
   Widget build(BuildContext context) {
+    final dates = Provider.of<ProviderWeb>(context,listen: false).datosUsuario;
     final size = MediaQuery.of(context).size; // Usamos el tamaño de pantalla para adaptar anchos y altos
     return Scaffold(
       backgroundColor: const Color(0xFF060606),
@@ -63,7 +64,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
               ),
               SizedBox(height: size.height * 0.025),
               Text(
-                'Andres Mora',
+                dates['username'],
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: size.width * 0.06,
@@ -72,7 +73,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
               ),
               SizedBox(height: size.height * 0.01),
               Text(
-                'andres@gmail.com',
+                dates['email'],
                 style: TextStyle(
                   color: Colors.white70,
                   fontSize: size.width * 0.04,

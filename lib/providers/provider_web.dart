@@ -7,7 +7,7 @@ class ProviderWeb extends ChangeNotifier{
   final String _url = "https://zwhtbuwayehcdpsvwpzf.supabase.co/auth";
   final _apiKey = "sb_publishable_m7zswN4uuc9i3jvTQFXVsw_hMjj13Mp";
   //registro por medio de la web
-  Future<bool> registerWeb (String name,String email,String password)async{
+  Future<bool> registerWeb (String name,String username,String email,String password)async{
     try{
       final url = Uri.parse("$_url/v1/signup");
       final respuesta =  await http.post(
@@ -21,8 +21,9 @@ class ProviderWeb extends ChangeNotifier{
           "email":email,
           "password":password,
           "data": {
-            "username": name,
-            "nombre": name
+            "name": name,
+            "username": "@$username"
+            
           }
         })
       );
@@ -41,8 +42,8 @@ class ProviderWeb extends ChangeNotifier{
     }
   }
   //login por medio de la web
-  Map datosLogin={};
   String token = "";
+  Map datosUsuario = {};
   Future<bool> loginWeb (String email,String password)async{
     try{
       final url = Uri.parse("$_url/v1/token?grant_type=password");
@@ -59,8 +60,13 @@ class ProviderWeb extends ChangeNotifier{
       );
       if(respuesta.statusCode==200){
         print("Conexion exitosa");
-        datosLogin = jsonDecode(respuesta.body);
+        //datos generales
+        final datosLogin = jsonDecode(respuesta.body);
+        //token
         token = datosLogin["access_token"];
+        
+        //datos del usuario para mapearlo
+        datosUsuario = datosLogin["user"]["user_metadata"];
         notifyListeners();
         return true;
       }else{

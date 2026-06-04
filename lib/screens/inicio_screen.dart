@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:vallenato/providers/provider_web.dart';
 import 'package:vallenato/themes/theme_app.dart';
 import '../widgets/widgets.dart';
 
@@ -6,7 +8,8 @@ class InicioScreen extends StatelessWidget {
   const InicioScreen({super.key});
   @override
   Widget build(BuildContext context) {
-    String nombre = "Andres";
+    final dates = Provider.of<ProviderWeb>(context,listen: false).datosUsuario;
+    String nombre = dates['name'] ?? "Andres";
     final size = MediaQuery.of(context).size; // Calcula el ancho y alto actuales
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -32,7 +35,7 @@ class InicioScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: size.width * 0.055,
                           color: ThemeApp.dorado,
-                          fontWeight: FontWeight.w300,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ],
