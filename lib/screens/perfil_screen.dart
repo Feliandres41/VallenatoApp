@@ -1,10 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:vallenato/providers/provider_web.dart';
 import 'package:vallenato/themes/theme_app.dart';
 import 'package:vallenato/widgets/widgets.dart';
 
-class PerfilScreen extends StatelessWidget {
+class PerfilScreen extends StatefulWidget {
   const PerfilScreen({super.key});
 
+  @override
+  State<PerfilScreen> createState() => _PerfilScreenState();
+}
+
+class _PerfilScreenState extends State<PerfilScreen> {
+  final _passwordChanged = TextEditingController();
+  @override
+  void dispose(){
+    super.dispose();
+    _passwordChanged.dispose();
+  }
+  bool estado = true;
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size; // Usamos el tamaño de pantalla para adaptar anchos y altos
@@ -191,6 +205,86 @@ class PerfilScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: size.height * 0.02),
+              estado==true
+              //cambiar contraseña
+              ?SizedBox(
+                width: double.infinity,
+                height: size.height * 0.065,
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      estado = !estado;
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(199, 47, 211, 170),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(size.width * 0.045),
+                    ),
+                  ),
+                  child: Text(
+                    'Cambiar contraseña',
+                    style: TextStyle(
+                      fontSize: size.width * 0.045,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              )
+              : SizedBox(
+                width: double.infinity,
+                height: size.height * 0.065,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _passwordChanged,
+                        decoration: InputDecoration(
+                          suffix: IconButton(
+                            onPressed: () async{
+                              bool respuesta = await Provider.of<ProviderWeb>(context,listen: false).passwordWeb(_passwordChanged.text);
+                              if(respuesta==true){
+                                setState(() {
+                                  estado = !estado;
+                                });
+                              }
+                            }, icon: Text("Enviar",style: TextStyle(color: Color.fromARGB(199, 47, 211, 170),
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width*0.04),)
+                            
+                          ),
+                          label: Row(
+                            children: const [
+                              Icon(Icons.password, color: Colors.grey),
+                              SizedBox(width: 10),
+                              Text('Ingrese la nueva contraseña',
+                              style: TextStyle(color: Colors.grey)),
+                            ],
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Color.fromARGB(181, 77, 77, 77),
+                              width: 1.4,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Color.fromARGB(181, 77, 77, 77),
+                              width: 1.4,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )
             ],
           ),
         ),

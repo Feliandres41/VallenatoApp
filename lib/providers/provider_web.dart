@@ -42,6 +42,7 @@ class ProviderWeb extends ChangeNotifier{
   }
   //login por medio de la web
   Map datosLogin={};
+  String token = "";
   Future<bool> loginWeb (String email,String password)async{
     try{
       final url = Uri.parse("$_url/v1/token?grant_type=password");
@@ -59,6 +60,7 @@ class ProviderWeb extends ChangeNotifier{
       if(respuesta.statusCode==200){
         print("Conexion exitosa");
         datosLogin = jsonDecode(respuesta.body);
+        token = datosLogin["access_token"];
         notifyListeners();
         return true;
       }else{
@@ -68,6 +70,29 @@ class ProviderWeb extends ChangeNotifier{
       }
     }catch(e){
       print("error de conexion:\n$e");
+      return false;
+    }
+  }
+
+  //Metodo de cambio de contraseña
+  Future<bool> passwordWeb(String password)async{
+    final url = Uri.parse("$_url/v1/user");
+    final respuesta = await http.put(
+      url,
+      headers: {
+        "Authorization":"Bearer $token",
+        "Content-Type":"application/json",
+        "apikey": _apiKey,
+      },
+      body: jsonEncode({
+        "password":password,
+      }),
+    );
+    if(respuesta.statusCode==200){
+      print("Contraseña cambiada con exito");
+      return true;
+    }else{
+      print("Error");
       return false;
     }
   }
