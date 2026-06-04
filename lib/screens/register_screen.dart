@@ -1,0 +1,297 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:vallenato/providers/provider_web.dart';
+import 'package:vallenato/themes/theme_app.dart';
+
+class RegisterScreen extends StatefulWidget{
+  const RegisterScreen({super.key});
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  final _name = TextEditingController();
+  final _email = TextEditingController();
+  final _passowrd = TextEditingController();
+  @override
+  void dispose(){
+    _name.dispose();
+    _email.dispose();
+    _passowrd.dispose();
+    super.dispose();
+  }
+
+  bool estado = true;
+
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size; // Usamos valores relativos para mejorar el layout en diferentes pantallas
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(height: size.height * 0.015),
+
+                Text(
+                  'Bienvenido',
+                  style: TextStyle(
+                    fontSize: size.width * 0.085,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+
+                SizedBox(height: size.height * 0.01),
+
+                Text(
+                  'Inicia sesión para continuar',
+                  style: TextStyle(
+                    fontSize: size.width * 0.055,
+                    fontWeight: FontWeight.w300,
+                    color: Colors.grey,
+                  ),
+                ),
+
+                SizedBox(height: size.height * 0.05),
+
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      width: size.width * 0.35,
+                      height: size.width * 0.35,
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 2, color: ThemeApp.dorado),
+                        borderRadius: BorderRadius.circular(size.width * 0.175),
+                        color: const Color.fromARGB(255, 30, 20, 0),
+                      ),
+                    ),
+                    Container(
+                      width: size.width * 0.3,
+                      height: size.width * 0.2,
+                      child: Image.asset(
+                        'assets/acordeon.jpg',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: size.height * 0.05),
+
+                Form(
+                  child: Column(
+                    children: [
+                      //nombre de usuario
+                      SizedBox(
+                        width: size.width * 0.9,
+                        child: TextFormField(
+                          style: TextStyle(
+                            color: ThemeApp.dorado,
+                            fontWeight: FontWeight.w300,
+                          ),
+                          controller: _name,
+                          cursorColor: ThemeApp.dorado,
+                          decoration: InputDecoration(
+                            label: Row(
+                              children: const [
+                                Icon(Icons.person, color: Colors.grey),
+                                SizedBox(width: 10),
+                                Text('Nombre de usuario',
+                                    style: TextStyle(color: Colors.grey)),
+                              ],
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color.fromARGB(181, 77, 77, 77),
+                                width: 1.4,
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color.fromARGB(181, 77, 77, 77),
+                                width: 1.4,
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: size.height * 0.03),
+
+                      
+                      SizedBox(
+                        width: size.width * 0.9,
+                        child: TextFormField(
+                          style: TextStyle(
+                            color: ThemeApp.dorado,
+                            fontWeight: FontWeight.w300,
+                          ),
+                          controller: _email,
+                          cursorColor: ThemeApp.dorado,
+                          decoration: InputDecoration(
+                            label: Row(
+                              children: const [
+                                Icon(Icons.email, color: Colors.grey),
+                                SizedBox(width: 10),
+                                Text('Correo electrónico',
+                                    style: TextStyle(color: Colors.grey)),
+                              ],
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color.fromARGB(181, 77, 77, 77),
+                                width: 1.4,
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color.fromARGB(181, 77, 77, 77),
+                                width: 1.4,
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: size.height * 0.03),
+
+                      SizedBox(
+                        width: size.width * 0.9,
+                        child: TextFormField(
+                          style: TextStyle(
+                            color: ThemeApp.dorado,
+                            fontWeight: FontWeight.w300,
+                          ),
+                          obscureText: estado,
+                          controller: _passowrd,
+                          cursorColor: ThemeApp.dorado,
+                          decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  estado = !estado;
+                                });
+                              },
+                              icon: Icon(
+                                estado ? Icons.visibility_off : Icons.visibility,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            label: Row(
+                              children: const [
+                                Icon(Icons.key, color: Colors.grey),
+                                SizedBox(width: 10),
+                                Text('Contraseña',
+                                    style: TextStyle(color: Colors.grey)),
+                              ],
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color.fromARGB(181, 77, 77, 77),
+                                width: 1.4,
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color.fromARGB(181, 77, 77, 77),
+                                width: 1.4,
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: size.height * 0.03),
+                      SizedBox(
+                        width: size.width * 0.9,
+                        child: ElevatedButton(
+                          onPressed: () async{
+                            // Navigator.pushReplacementNamed(context, '/inicio');
+                            var respuesta = await Provider.of<ProviderWeb>(context,listen: false).registerWeb(_name.text, _email.text, _passowrd.text);
+                            if(respuesta == true){
+                              print("Cuenta creada correctamente_____-");
+                              Navigator.pushReplacementNamed(context, '/inicio');
+                            }else{
+                              print("Error");
+                            }
+                          },
+                          style: ButtonStyle().copyWith(
+                            backgroundColor: MaterialStateColor.resolveWith(
+                              (states) => ThemeApp.dorado,
+                            ),
+                            shape: WidgetStateProperty.resolveWith(
+                              (states) => RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            'Registrarse',
+                            style: TextStyle(
+                              fontSize: size.width * 0.045,
+                              color: const Color.fromARGB(255, 8, 5, 0),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(height: size.height * 0.005),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "¿ya tienes cuenta?",
+                      style: TextStyle(
+                        fontSize: size.width * 0.045,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(context, '/login');
+                      },
+                      style: ButtonStyle().copyWith(
+                        overlayColor: MaterialStateProperty.all(Colors.transparent),
+                      ),
+                      child: Text(
+                        'Inicia sesion',
+                        style: TextStyle(
+                          fontSize: size.width * 0.045,
+                          color: ThemeApp.dorado,
+                        ),
+                      ),
+                    )
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
