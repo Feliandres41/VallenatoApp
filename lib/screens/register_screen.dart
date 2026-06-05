@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:vallenato/providers/provider_web.dart';
 import 'package:vallenato/themes/theme_app.dart';
@@ -15,32 +16,64 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _alias = TextEditingController();
   final _email = TextEditingController();
   final _passowrd = TextEditingController();
+  final FocusNode _nameFocus = FocusNode();
+  final FocusNode _aliasFocus = FocusNode();
+  final FocusNode _emailFocus = FocusNode();
+  final FocusNode _passwordFocus = FocusNode();
+  @override
+  void initState() {
+    super.initState();
+    _nameFocus.addListener(() { if (_nameFocus.hasFocus) SystemChannels.textInput.invokeMethod('TextInput.show'); });
+    _aliasFocus.addListener(() { if (_aliasFocus.hasFocus) SystemChannels.textInput.invokeMethod('TextInput.show'); });
+    _emailFocus.addListener(() { if (_emailFocus.hasFocus) SystemChannels.textInput.invokeMethod('TextInput.show'); });
+    _passwordFocus.addListener(() { if (_passwordFocus.hasFocus) SystemChannels.textInput.invokeMethod('TextInput.show'); });
+  }
+
   @override
   void dispose(){
     _name.dispose();
     _alias.dispose();
     _email.dispose();
     _passowrd.dispose();
+    _nameFocus.dispose();
+    _aliasFocus.dispose();
+    _emailFocus.dispose();
+    _passwordFocus.dispose();
     super.dispose();
   }
 
   bool estado = true;
+
+  double _roundedInset(BuildContext context, {double step = 20.0}) {
+    final v = MediaQuery.of(context).viewInsets.bottom;
+    return (v / step).roundToDouble() * step;
+  }
 
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size; // Usamos valores relativos para mejorar el layout en diferentes pantallas
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
+      body: SafeArea(
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.manual,
+                padding: EdgeInsets.only(bottom: _roundedInset(context)),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
               SizedBox(height: size.height * 0.015),
       
               Text(
@@ -101,6 +134,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           fontWeight: FontWeight.w300,
                         ),
                         controller: _name,
+                        focusNode: _nameFocus,
                         cursorColor: ThemeApp.dorado,
                         decoration: InputDecoration(
                           label: Row(
@@ -142,6 +176,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           fontWeight: FontWeight.w300,
                         ),
                         controller: _alias,
+                        focusNode: _aliasFocus,
                         cursorColor: ThemeApp.dorado,
                         decoration: InputDecoration(
                           label: Row(
@@ -183,6 +218,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           fontWeight: FontWeight.w300,
                         ),
                         controller: _email,
+                        focusNode: _emailFocus,
                         cursorColor: ThemeApp.dorado,
                         decoration: InputDecoration(
                           label: Row(
@@ -224,6 +260,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         obscureText: estado,
                         controller: _passowrd,
+                        focusNode: _passwordFocus,
                         cursorColor: ThemeApp.dorado,
                         decoration: InputDecoration(
                           suffixIcon: IconButton(
@@ -330,9 +367,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ],
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height*0.02,
-              )
+                height: MediaQuery.of(context).size.height * 0.02,
+              ),
             ],
+          ),
+        ),
+      ),
+    );
+            },
           ),
         ),
       ),
