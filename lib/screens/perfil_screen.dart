@@ -63,22 +63,24 @@ class _PerfilScreenState extends State<PerfilScreen> {
                 ),
               ),
               SizedBox(height: size.height * 0.025),
-              Text(
-                dates['username'],
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: size.width * 0.06,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
+              //problemas de null
+              // Text(
+              //   dates['username'],
+              //   style: TextStyle(
+              //     color: Colors.white,
+              //     fontSize: size.width * 0.06,
+              //     fontWeight: FontWeight.w700,
+              //   ),
+              // ),
               SizedBox(height: size.height * 0.01),
-              Text(
-                dates['email'],
-                style: TextStyle(
-                  color: Colors.white70,
-                  fontSize: size.width * 0.04,
-                ),
-              ),
+              //problemas de null
+              // Text(
+              //   dates['email'],
+              //   style: TextStyle(
+              //     color: Colors.white70,
+              //     fontSize: size.width * 0.04,
+              //   ),
+              // ),
               SizedBox(height: size.height * 0.03),
               Container(
                 width: double.infinity,

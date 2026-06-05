@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vallenato/providers/provider_web.dart';
 import 'package:vallenato/themes/theme_app.dart';
+import 'package:vallenato/widgets/widgets.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,6 +16,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _password = TextEditingController();
 
   bool estado = true;
+  final dorado = ThemeApp.dorado;
+  
 
   @override
   void dispose() {
@@ -27,6 +30,8 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final viewInsets = MediaQuery.of(context).viewInsets;
+
+    final espacio = MediaQuery.of(context).size;
 
     return Scaffold(
       // 🔥 CLAVE: evita re-layout agresivo cuando aparece teclado
@@ -265,7 +270,114 @@ class _LoginScreenState extends State<LoginScreen> {
                         ],
                       ),
                     ),
-
+                    SizedBox(height: size.height * 0.02),
+                    Center(
+                      child: TextButton(onPressed: () {
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text("¿Olvidaste la contraseña?"),
+                              content: 
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width*0.01,
+                                child: TextFormField(
+                                  //contraseña perdida
+                                  controller: _email,
+                              keyboardType: TextInputType.emailAddress,
+                              style: TextStyle(
+                                color: ThemeApp.dorado,
+                                fontWeight: FontWeight.w300,
+                              ),
+                              cursorColor: ThemeApp.dorado,
+                              decoration: InputDecoration(
+                                label: Row(
+                                  children: const [
+                                    Icon(Icons.email, color: Colors.grey),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      'Correo electrónico',
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                  ],
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                    color: Color.fromARGB(181, 77, 77, 77),
+                                    width: 1.4,
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                    color: Color.fromARGB(181, 77, 77, 77),
+                                    width: 1.4,
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                                ),
+                              // Text(
+                              //   "Se enviará un correo para restablecer tu contraseña.",
+                              // ),
+                              actions: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  spacing: espacio.width*0.08,
+                                  children: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      style: ButtonStyle().copyWith(
+                                        backgroundColor: WidgetStateColor.resolveWith((states) {
+                                          if(states.contains(WidgetState.pressed)){
+                                            return const Color.fromARGB(183, 54, 37, 1);
+                                          }else{
+                                            return Colors.transparent;
+                                          }
+                                        },),
+                                        // shadowColor: WidgetStateColor.resolveWith((states) => dorado,),
+                                        // overlayColor: WidgetStateColor.resolveWith((states) => dorado,),
+                                      ),
+                                      child: Text("Cancelar",style: TextStyle(color: dorado),),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () async{
+                                        // Navigator.pop(context);
+                                        bool respuesta = await Provider.of<ProviderWeb>(context,listen: false).sendPassword(_email.text);
+                                        if(respuesta==true){
+                                          Navigator.pop(context);
+                                        }
+                                      },style: ButtonStyle().copyWith(
+                                        backgroundColor: WidgetStateColor.resolveWith((states) => dorado,),
+                                        shadowColor: WidgetStateColor.resolveWith((states) => dorado,),
+                                        overlayColor: WidgetStateColor.resolveWith((states) => dorado,),
+                                      ),
+                                      child: Text("Enviar",style: TextStyle(
+                                        color: Colors.black
+                                      ),),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            );
+                          }
+                        );
+                      },style: ButtonStyle().copyWith(
+                        backgroundColor: WidgetStateColor.resolveWith((states) => Colors.transparent,),
+                        shadowColor: WidgetStateColor.resolveWith((states) => Colors.transparent,),
+                        overlayColor: WidgetStateColor.resolveWith((states) => Colors.transparent,),
+                      ),
+                      child: Text("¿Olvidaste la contraseña?",
+                      style: TextStyle(
+                        fontSize: size.width * 0.045,
+                        color: ThemeApp.dorado,
+                      ),)),
+                    ),
                     SizedBox(height: size.height * 0.02),
 
                     Row(

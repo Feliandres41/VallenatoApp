@@ -102,4 +102,25 @@ class ProviderWeb extends ChangeNotifier{
       return false;
     }
   }
+
+  //Mandar link de recuperacion de cambio de contraseña
+  Future<bool> sendPassword(String email) async{
+    final url = Uri.parse("$_url/v1/recover");
+    final respuesta = await http.post(
+      url,
+      headers: {
+        "Content-Type":"application/json",
+        "apikey": _apiKey,
+      },
+      body: jsonEncode({
+        "email":email,
+      }),
+    );
+    if(respuesta.statusCode == 200){
+      print("Verifique su bandeja de entrada");
+      return true;
+    }else{
+      return false;
+    }
+  }
 }
