@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vallenato/providers/provider_web.dart';
 import 'package:vallenato/themes/theme_app.dart';
+import 'package:vallenato/widgets/notificacion_widget.dart';
 import 'package:vallenato/widgets/widgets.dart';
 
 class PerfilScreen extends StatefulWidget {
@@ -189,6 +190,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                 height: size.height * 0.065,
                 child: ElevatedButton(
                   onPressed: () {
+                    NotificacionWidget.mostrarMensaje(context, "Sesion cerrada", Colors.red);
                     Navigator.pushReplacementNamed(context, '/login');
                   },
                   style: ElevatedButton.styleFrom(
@@ -244,13 +246,23 @@ class _PerfilScreenState extends State<PerfilScreen> {
                       child: TextField(
                         controller: _passwordChanged,
                         decoration: InputDecoration(
+
                           suffix: IconButton(
                             onPressed: () async{
-                              bool respuesta = await Provider.of<ProviderWeb>(context,listen: false).passwordWeb(_passwordChanged.text);
-                              if(respuesta==true){
-                                setState(() {
-                                  estado = !estado;
-                                });
+                              if(_passwordChanged.text.isNotEmpty){
+                                final respuesta = await Provider.of<ProviderWeb>(context,listen: false).passwordWeb(_passwordChanged.text);
+                                if(respuesta["codigo"]==200){
+                                  if(!_passwordChanged.text.contains(" ")){
+                                    NotificacionWidget.mostrarMensaje(context, "Contraseña cambiada con exito", Colors.green);
+                                    setState(() {
+                                      estado = !estado;
+                                    });
+                                  }else{
+                                    NotificacionWidget.mostrarMensaje(context, "La contraseña no puede contener espacios", Colors.yellow);
+                                  }
+                                }
+                              }else{
+                                NotificacionWidget.mostrarMensaje(context, "La contraseña no puede estar vacia", Color.fromARGB(255, 187, 176, 24));
                               }
                             }, icon: Text("Enviar",style: TextStyle(color: Color.fromARGB(199, 47, 211, 170),
                             fontWeight: FontWeight.bold,

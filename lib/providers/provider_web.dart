@@ -7,7 +7,7 @@ class ProviderWeb extends ChangeNotifier{
   final String _url = "https://zwhtbuwayehcdpsvwpzf.supabase.co/auth";
   final _apiKey = "sb_publishable_m7zswN4uuc9i3jvTQFXVsw_hMjj13Mp";
   //registro por medio de la web
-  Future<bool> registerWeb (String name,String username,String email,String password)async{
+  Future<Map> registerWeb (String name,String username,String email,String password)async{
     try{
       final url = Uri.parse("$_url/v1/signup");
       final respuesta =  await http.post(
@@ -27,18 +27,29 @@ class ProviderWeb extends ChangeNotifier{
           }
         })
       );
-      if(respuesta.statusCode==200 || respuesta.statusCode==201){
-        print("Conexion exitosa");
+      if(respuesta.statusCode==200){
+        print("Conexion exitosa\n ${respuesta.statusCode}");
         notifyListeners();
-        return true;
+        // return true;
+        return ({
+          "mensaje":"Cuenta exitoso",
+          "estado":201
+        });
       }else{
+        print(respuesta.statusCode);
         print("error interno");
         notifyListeners();
-        return false;
+        return ({
+          "mensaje":"Error al crear la cuenta",
+          "estado":422
+        });
       }
     }catch(e){
       print("error de conexion:\n$e");
-      return false;
+      return ({
+        "mensaje":"Error de conexion",
+        "estado":404
+      });
     }
   }
   //login por medio de la web
@@ -73,7 +84,7 @@ class ProviderWeb extends ChangeNotifier{
           "code":200
         });
       }else{
-        print("error interno");
+        print("error interno\n${respuesta.statusCode}");
         notifyListeners();
         return ({
           "mensaje":"Error interno",
@@ -90,25 +101,37 @@ class ProviderWeb extends ChangeNotifier{
   }
 
   //Metodo de cambio de contraseña
-  Future<bool> passwordWeb(String password)async{
-    final url = Uri.parse("$_url/v1/user");
-    final respuesta = await http.put(
-      url,
-      headers: {
-        "Authorization":"Bearer $token",
-        "Content-Type":"application/json",
-        "apikey": _apiKey,
-      },
-      body: jsonEncode({
-        "password":password,
-      }),
-    );
-    if(respuesta.statusCode==200){
-      print("Contraseña cambiada con exito");
-      return true;
-    }else{
-      print("Error");
-      return false;
+  Future<Map> passwordWeb(String password)async{
+    try{
+      final url = Uri.parse("$_url/v1/user");
+      final respuesta = await http.put(
+        url,
+        headers: {
+          "Authorization":"Bearer $token",
+          "Content-Type":"application/json",
+          "apikey": _apiKey,
+        },
+        body: jsonEncode({
+          "password":password,
+        }),
+      );
+      if(respuesta.statusCode==200){
+        print("Contraseña cambiada con exito");
+        return ({
+          "mensaje":"Contraseña cambiada",
+          "codigo":200
+        });
+      }else{
+        print("Error interno");
+        return ({
+          "mensaje":"error interno",
+        });
+      }
+    }catch(e){
+      print("Error de conexion");
+      return ({
+        "mensaje":"error de conexion",
+      });
     }
   }
 

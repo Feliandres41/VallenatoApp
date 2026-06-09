@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:vallenato/providers/provider_web.dart';
 import 'package:vallenato/themes/theme_app.dart';
+import 'package:vallenato/widgets/notificacion_widget.dart';
 
 class RegisterScreen extends StatefulWidget{
   const RegisterScreen({super.key});
@@ -309,11 +310,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         onPressed: () async{
                           // Navigator.pushReplacementNamed(context, '/inicio');
                           var respuesta = await Provider.of<ProviderWeb>(context,listen: false).registerWeb(_name.text,_alias.text, _email.text, _passowrd.text);
-                          if(respuesta == true){
+                          if(respuesta["estado"] == 201){
                             print("Cuenta creada correctamente_____-");
+                            NotificacionWidget.mostrarMensaje(context, "Registro exitoso",Colors.green);
                             Navigator.pushReplacementNamed(context, '/inicio');
-                          }else{
-                            print("Error");
+                          }else if(respuesta["estado"]==422){
+                            NotificacionWidget.mostrarMensaje(context, "Registro fallido. Correo o nombre de usuario en uso",const Color.fromARGB(255, 187, 176, 24));
+                          }
+                          else{
+                            print("Error\n $respuesta");
                           }
                         },
                         style: ButtonStyle().copyWith(
@@ -380,4 +385,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
   }
+
+
 }
