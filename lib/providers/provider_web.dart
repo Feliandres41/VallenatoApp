@@ -44,7 +44,7 @@ class ProviderWeb extends ChangeNotifier{
   //login por medio de la web
   String token = "";
   Map datosUsuario = {};
-  Future<bool> loginWeb (String email,String password)async{
+  Future<Map> loginWeb (String email,String password)async{
     try{
       final url = Uri.parse("$_url/v1/token?grant_type=password");
       final respuesta =  await http.post(
@@ -68,15 +68,24 @@ class ProviderWeb extends ChangeNotifier{
         //datos del usuario para mapearlo
         datosUsuario = datosLogin["user"]["user_metadata"];
         notifyListeners();
-        return true;
+        return ({
+          "mensaje":"Login exitoso",
+          "code":200
+        });
       }else{
         print("error interno");
         notifyListeners();
-        return false;
+        return ({
+          "mensaje":"Error interno",
+          "code":400
+        });
       }
     }catch(e){
       print("error de conexion:\n$e");
-      return false;
+      return ({
+        "mensaje":"Error de conexion",
+        "code":404
+      });
     }
   }
 

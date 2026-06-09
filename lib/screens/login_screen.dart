@@ -34,7 +34,6 @@ class _LoginScreenState extends State<LoginScreen> {
     final espacio = MediaQuery.of(context).size;
 
     return Scaffold(
-      // 🔥 CLAVE: evita re-layout agresivo cuando aparece teclado
       resizeToAvoidBottomInset: false,
 
       appBar: AppBar(
@@ -230,17 +229,17 @@ class _LoginScreenState extends State<LoginScreen> {
                               onPressed: () async {
                                 final respuesta =
                                     await Provider.of<ProviderWeb>(
-                                  context,
-                                  listen: false,
-                                ).loginWeb(
-                                  _email.text,
-                                  _password.text,
+                                    context,
+                                    listen: false,
+                                  ).loginWeb(
+                                    _email.text,
+                                    _password.text,
                                 );
 
-                                if (respuesta == true) {
+                                if (respuesta["code"] == 200) {
                                   if (!context.mounted) return;
                                   Navigator.pushReplacementNamed(
-                                      context, '/inicio');
+                                    context, '/inicio');
                                 } else {
                                   debugPrint(
                                     "Usuario no existe o credenciales incorrectas",
