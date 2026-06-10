@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vallenato/providers/provider_web.dart';
 import 'package:vallenato/themes/theme_app.dart';
-import 'package:vallenato/widgets/widgets.dart';
+import 'package:vallenato/widgets/notificacion_widget.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,6 +14,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _email = TextEditingController();
   final _password = TextEditingController();
+  final _keyForm = GlobalKey<FormState>();
+  final _keyFormRecuperar = GlobalKey<FormState>();
 
   bool estado = true;
   final dorado = ThemeApp.dorado;
@@ -32,6 +34,8 @@ class _LoginScreenState extends State<LoginScreen> {
     final viewInsets = MediaQuery.of(context).viewInsets;
 
     final espacio = MediaQuery.of(context).size;
+
+    bool recuperar = false;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -120,6 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(height: size.height * 0.05),
 
                     Form(
+                      key: _keyForm,
                       child: Column(
                         children: [
                           SizedBox(
@@ -161,6 +166,27 @@ class _LoginScreenState extends State<LoginScreen> {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Campo obligatorio.";
+                                }
+
+                                if (!value.contains("@")) {
+                                  return "Debe incluir @.";
+                                }
+
+                                final dominioValido =
+                                    value.contains(".com") ||
+                                    value.contains(".co") ||
+                                    value.contains(".org") ||
+                                    value.contains(".net");
+
+                                if (!dominioValido) {
+                                  return "Falta el dominio (.com, .co, .org, .net).";
+                                }
+
+                                return null;
+                              },
                             ),
                           ),
 
@@ -218,6 +244,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
+                              validator: (value) => 
+                              value!.length<8
+                              ? "La contraseña debe tener mínimo 8 caracteres."
+                              :null
                             ),
                           ),
 
@@ -227,23 +257,30 @@ class _LoginScreenState extends State<LoginScreen> {
                             width: size.width * 0.9,
                             child: ElevatedButton(
                               onPressed: () async {
-                                final respuesta =
-                                    await Provider.of<ProviderWeb>(
-                                    context,
-                                    listen: false,
-                                  ).loginWeb(
-                                    _email.text,
-                                    _password.text,
-                                );
+                                if(recuperar==false){
+                                  if(_keyForm.currentState!.validate()){
+                                    final respuesta =
+                                        await Provider.of<ProviderWeb>(
+                                        context,
+                                        listen: false,
+                                      ).loginWeb(
+                                        _email.text,
+                                        _password.text,
+                                    );
 
-                                if (respuesta["code"] == 200) {
-                                  if (!context.mounted) return;
-                                  Navigator.pushReplacementNamed(
-                                    context, '/inicio');
-                                } else {
-                                  debugPrint(
-                                    "Usuario no existe o credenciales incorrectas",
-                                  );
+                                    if (respuesta["code"] == 200) {
+                                      if (!context.mounted) return;
+                                        NotificacionWidget.mostrarMensaje(context, "Login exitoso", Colors.green);
+                                        Navigator.pushReplacementNamed(
+                                          context, '/inicio'
+                                        );
+                                    } else {
+                                      // debugPrint(
+                                      //   "Usuario no existe o credenciales incorrectas",
+                                      // );
+                                      NotificacionWidget.mostrarMensaje(context, "Credenciales incorrectas o usuario inexistente", const Color.fromARGB(255, 112, 12, 5));
+                                    }
+                                  }
                                 }
                               },
                               style: ButtonStyle(
@@ -272,6 +309,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(height: size.height * 0.02),
                     Center(
                       child: TextButton(onPressed: () {
+                        setState(() {
+                          recuperar=true;
+                        });
                         showDialog(
                           context: context,
                           barrierDismissible: false,
@@ -281,45 +321,70 @@ class _LoginScreenState extends State<LoginScreen> {
                               content: 
                               SizedBox(
                                 width: MediaQuery.of(context).size.width*0.01,
-                                child: TextFormField(
-                                  //contraseña perdida
-                                  controller: _email,
-                              keyboardType: TextInputType.emailAddress,
-                              style: TextStyle(
-                                color: ThemeApp.dorado,
-                                fontWeight: FontWeight.w300,
-                              ),
-                              cursorColor: ThemeApp.dorado,
-                              decoration: InputDecoration(
-                                label: Row(
-                                  children: const [
-                                    Icon(Icons.email, color: Colors.grey),
-                                    SizedBox(width: 10),
-                                    Text(
-                                      'Correo electrónico',
-                                      style: TextStyle(color: Colors.grey),
+                                child: 
+                                Form(
+                                  key: _keyFormRecuperar,
+                                  child: TextFormField(
+                                    //contraseña perdida
+                                    controller: _email,
+                                    keyboardType: TextInputType.emailAddress,
+                                      style: TextStyle(
+                                      color: ThemeApp.dorado,
+                                      fontWeight: FontWeight.w300,
                                     ),
-                                  ],
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: Color.fromARGB(181, 77, 77, 77),
-                                    width: 1.4,
+                                    cursorColor: ThemeApp.dorado,
+                                    decoration: InputDecoration(
+                                      label: Row(
+                                        children: const 
+                                        [
+                                          Icon(Icons.email, color: Colors.grey),
+                                          SizedBox(width: 10),
+                                          Text(
+                                            'Correo electrónico',
+                                            style: TextStyle(color: Colors.grey),
+                                          ),
+                                        ],
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: const BorderSide(
+                                          color: Color.fromARGB(181, 77, 77, 77),
+                                          width: 1.4,
+                                        ),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: const BorderSide(
+                                          color: Color.fromARGB(181, 77, 77, 77),
+                                          width: 1.4,
+                                        ),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return "Campo obligatorio.";
+                                      }
+
+                                      if (!value.contains("@")) {
+                                        return "Debe incluir @.";
+                                      }
+
+                                      final dominioValido =
+                                          value.contains(".com") ||
+                                          value.contains(".co") ||
+                                          value.contains(".org") ||
+                                          value.contains(".net");
+
+                                      if (!dominioValido) {
+                                        return "Falta el dominio (.com, .co, .org, .net).";
+                                      }
+                                      return null;
+                                    },
                                   ),
-                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: Color.fromARGB(181, 77, 77, 77),
-                                    width: 1.4,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
                                 ),
                               // Text(
                               //   "Se enviará un correo para restablecer tu contraseña.",
@@ -330,7 +395,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                   spacing: espacio.width*0.08,
                                   children: [
                                     TextButton(
-                                      onPressed: () => Navigator.pop(context),
+                                      onPressed: () {
+                                        setState(() {
+                                          recuperar = false;
+                                        });
+                                        Navigator.pop(context);
+                                      },
                                       style: ButtonStyle().copyWith(
                                         backgroundColor: WidgetStateColor.resolveWith((states) {
                                           if(states.contains(WidgetState.pressed)){
@@ -347,9 +417,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ElevatedButton(
                                       onPressed: () async{
                                         // Navigator.pop(context);
-                                        bool respuesta = await Provider.of<ProviderWeb>(context,listen: false).sendPassword(_email.text);
-                                        if(respuesta==true){
-                                          Navigator.pop(context);
+                                        
+                                        if(_keyFormRecuperar.currentState!.validate()){
+                                          bool respuesta = await Provider.of<ProviderWeb>(context,listen: false).sendPassword(_email.text);
+                                          if(respuesta==true){
+                                            NotificacionWidget.mostrarMensaje(context, "Link de recuperación enviado. Revise su correo.", Colors.green);
+                                            setState(() {
+                                              recuperar = false;
+                                            });
+                                            Navigator.pop(context);
+                                          }
                                         }
                                       },style: ButtonStyle().copyWith(
                                         backgroundColor: WidgetStateColor.resolveWith((states) => dorado,),

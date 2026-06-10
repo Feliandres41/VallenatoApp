@@ -18,7 +18,7 @@ class NotificacionWidget {
         color: Colors.white,
       ),
     ),
-    duration: const Duration(seconds: 5),
+    duration: const Duration(seconds: 3),
   ),
 );
 }

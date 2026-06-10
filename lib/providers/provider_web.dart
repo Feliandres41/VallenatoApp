@@ -29,6 +29,9 @@ class ProviderWeb extends ChangeNotifier{
       );
       if(respuesta.statusCode==200){
         print("Conexion exitosa\n ${respuesta.statusCode}");
+        final datosLogin = jsonDecode(respuesta.body);
+        token = datosLogin["access_token"];
+        datosUsuario = datosLogin["user"]["user_metadata"];
         notifyListeners();
         // return true;
         return ({
