@@ -252,6 +252,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                               if(_passwordChanged.text.isNotEmpty){
                                 final respuesta = await Provider.of<ProviderWeb>(context,listen: false).passwordWeb(_passwordChanged.text);
                                 if(respuesta["codigo"]==200){
+                                  print("200");
                                   if(!_passwordChanged.text.contains(" ")){
                                     NotificacionWidget.mostrarMensaje(context, "Contraseña cambiada con exito", Colors.green);
                                     setState(() {
