@@ -15,6 +15,8 @@ class _AvatarScreenState extends State<AvatarScreen> {
   bool avatar = false;
   String image_path = "";
   String texto = "Continuar";
+  bool cargando = false;
+
   @override
   Widget build(BuildContext context) {
     final ancho = MediaQuery.of(context).size.width;
@@ -162,36 +164,41 @@ class _AvatarScreenState extends State<AvatarScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  GestureDetector(
-                    onTap: () async {
-                      setState(() {
-                        texto = "Cargando...";
-                      });
-                      bool respuesta = await Provider.of<ProviderWeb>(
-                        context,
-                        listen: false,
-                      ).guardarImagenPerfil("$image_path");
-                      if (respuesta == true) {
-                        NotificacionWidget.mostrarMensaje(
-                          context,
-                          "Avatar agregado con exito",
-                          Colors.green,
-                        );
-                        Navigator.pushReplacementNamed(context, "/inicio");
-                      } else {
+                  IgnorePointer(
+                    ignoring: cargando,
+                    child: GestureDetector(
+                      onTap: () async {
                         setState(() {
-                          texto = "Continuar";
+                          cargando = true;
+                          texto = "Cargando...";
                         });
-                      }
-                    },
-                    child: Text(
-                      texto,
+                        bool respuesta = await Provider.of<ProviderWeb>(
+                          context,
+                          listen: false,
+                        ).guardarImagenPerfil("$image_path");
+                        if (respuesta == true) {
+                          NotificacionWidget.mostrarMensaje(
+                            context,
+                            "Avatar agregado con exito",
+                            Colors.green,
+                          );
+                          Navigator.pushReplacementNamed(context, "/inicio");
+                        } else {
+                          setState(() {
+                            cargando = false;
+                            texto = "Continuar";
+                          });
+                        }
+                      },
+                      child: Text(
+                        texto,
                       style: TextStyle(
                         fontSize: ancho * 0.05,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
+                  )
                 ],
               ),
             ),
