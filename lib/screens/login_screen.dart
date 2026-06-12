@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
     _password.dispose();
     super.dispose();
   }
-
+  String texto = "Iniciar sesión";
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -257,6 +257,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             width: size.width * 0.9,
                             child: ElevatedButton(
                               onPressed: () async {
+                                setState(() {
+                                  texto = "Cargando...";
+                                });
                                 if(recuperar==false){
                                   if(_keyForm.currentState!.validate()){
                                     final respuesta =
@@ -278,6 +281,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                       // debugPrint(
                                       //   "Usuario no existe o credenciales incorrectas",
                                       // );
+                                      setState(() {
+                                        texto = "Iniciar sesión";
+                                      });
                                       NotificacionWidget.mostrarMensaje(context, "Credenciales incorrectas o usuario inexistente", const Color.fromARGB(255, 112, 12, 5));
                                     }
                                   }
@@ -295,7 +301,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                               child: Text(
-                                'Iniciar sesión',
+                                '$texto',
                                 style: TextStyle(
                                   fontSize: size.width * 0.045,
                                   color: const Color.fromARGB(255, 8, 5, 0),
