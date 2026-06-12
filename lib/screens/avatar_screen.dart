@@ -14,6 +14,7 @@ class AvatarScreen extends StatefulWidget {
 class _AvatarScreenState extends State<AvatarScreen> {
   bool avatar = false;
   String image_path = "";
+  String texto = "Continuar";
   @override
   Widget build(BuildContext context) {
     final ancho = MediaQuery.of(context).size.width;
@@ -77,10 +78,10 @@ class _AvatarScreenState extends State<AvatarScreen> {
                         itemBuilder: (context, index) {
                           final datosHombre = hombres[index]["name"] ?? '';
                           final datosMujeres = mujer[index]["name"] ?? '';
-                          final imagenHombre =
-                              'https://zwhtbuwayehcdpsvwpzf.supabase.co/storage/v1/object/public/imagenes/hombre/$datosHombre';
-                          final imagenMujer =
-                              'https://zwhtbuwayehcdpsvwpzf.supabase.co/storage/v1/object/public/imagenes/mujer/$datosMujeres';
+                          final rutaHombre =
+                              'assets/avatars/hombre/$datosHombre';
+                          final rutaMujer =
+                              'assets/avatars/mujer/$datosMujeres';
                           return Padding(
                             padding: EdgeInsets.only(bottom: largo * 0.04),
                             child: Row(
@@ -104,7 +105,7 @@ class _AvatarScreenState extends State<AvatarScreen> {
                                         height: largo * 0.19,
                                         decoration: BoxDecoration(
                                           image: DecorationImage(
-                                            image: NetworkImage(imagenHombre),
+                                            image: AssetImage(rutaHombre),
                                             fit: BoxFit.cover,
                                           ),
                                         ),
@@ -131,7 +132,7 @@ class _AvatarScreenState extends State<AvatarScreen> {
                                         height: largo * 0.19,
                                         decoration: BoxDecoration(
                                           image: DecorationImage(
-                                            image: NetworkImage(imagenMujer),
+                                            image: AssetImage(rutaMujer),
                                             fit: BoxFit.cover,
                                           ),
                                         ),
@@ -156,27 +157,43 @@ class _AvatarScreenState extends State<AvatarScreen> {
           ? SizedBox()
           : Container(
               width: double.infinity,
-              height: largo*0.08,
+              height: largo * 0.08,
               color: Color.fromARGB(255, 122, 84, 12),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   GestureDetector(
-                    onTap: () async{
-                      bool respuesta = await Provider.of<ProviderWeb>(context,listen: false).guardarImagenPerfil("$image_path");
-                      if(respuesta==true){
-                        NotificacionWidget.mostrarMensaje(context, "Avatar agregado con exito", Colors.green);
+                    onTap: () async {
+                      setState(() {
+                        texto = "Cargando...";
+                      });
+                      bool respuesta = await Provider.of<ProviderWeb>(
+                        context,
+                        listen: false,
+                      ).guardarImagenPerfil("$image_path");
+                      if (respuesta == true) {
+                        NotificacionWidget.mostrarMensaje(
+                          context,
+                          "Avatar agregado con exito",
+                          Colors.green,
+                        );
                         Navigator.pushReplacementNamed(context, "/inicio");
+                      } else {
+                        setState(() {
+                          texto = "Continuar";
+                        });
                       }
                     },
-                    child: Text("Continuar",style: 
-                      TextStyle(
-                        fontSize: ancho*0.05,
-                        fontWeight: FontWeight.w700
+                    child: Text(
+                      texto,
+                      style: TextStyle(
+                        fontSize: ancho * 0.05,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
-                  )
-                ]),
+                  ),
+                ],
+              ),
             ),
     );
   }

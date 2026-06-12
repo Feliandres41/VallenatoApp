@@ -71,6 +71,8 @@ flutter:
     - assets/
     - assets/repertorio/
     - assets/splash.mp4
+    - assets/avatars/hombre/
+    - assets/avatars/mujer/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
