@@ -6,6 +6,8 @@ export './home_screen.dart';
 export './login_screen.dart';
 //pantalla registro
 export './register_screen.dart';
+//avatares
+
 //inicio
 export './inicio_screen.dart';
 //aprender

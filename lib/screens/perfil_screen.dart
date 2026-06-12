@@ -24,6 +24,9 @@ class _PerfilScreenState extends State<PerfilScreen> {
   Widget build(BuildContext context) {
     final dates = Provider.of<ProviderWeb>(context,listen: false).datosUsuario;
     final size = MediaQuery.of(context).size; // Usamos el tamaño de pantalla para adaptar anchos y altos
+    final p = Provider.of<ProviderWeb>(context,listen: false);
+    final nombreImagen = p.avatarPerfil;
+    var img = p.perfil;
     return Scaffold(
       backgroundColor: const Color(0xFF060606),
       body: SafeArea(
@@ -45,43 +48,37 @@ class _PerfilScreenState extends State<PerfilScreen> {
               ),
               SizedBox(height: size.height * 0.03),
               Container(
-                width: size.width * 0.28,
-                height: size.width * 0.28,
+                width: size.width * 0.32,
+                height: size.width * 0.32,
                 decoration: BoxDecoration(
-                  color: ThemeApp.dorado,
                   borderRadius: BorderRadius.circular(size.width * 0.14),
-                  border: Border.all(
-                    color: ThemeApp.dorado,
-                    width: size.width * 0.02,
-                  ),
+                  // border: Border.all(
+                  //   // color: ThemeApp.dorado,
+                  //   width: size.width * 0.02,
+                  // ),
                 ),
-                child: Center(
-                  child: Icon(
-                    Icons.person,
-                    size: size.width * 0.15,
-                    color: Colors.black,
-                  ),
-                ),
+                child: Image(image: NetworkImage(img),fit: BoxFit.cover,)
+
               ),
               SizedBox(height: size.height * 0.025),
               //problemas de null
-              // Text(
-              //   dates['username'],
-              //   style: TextStyle(
-              //     color: Colors.white,
-              //     fontSize: size.width * 0.06,
-              //     fontWeight: FontWeight.w700,
-              //   ),
-              // ),
+              Text(
+                dates['username'],
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: size.width * 0.06,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
               SizedBox(height: size.height * 0.01),
               //problemas de null
-              // Text(
-              //   dates['email'],
-              //   style: TextStyle(
-              //     color: Colors.white70,
-              //     fontSize: size.width * 0.04,
-              //   ),
-              // ),
+              Text(
+                dates['email'],
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: size.width * 0.04,
+                ),
+              ),
               SizedBox(height: size.height * 0.03),
               Container(
                 width: double.infinity,
