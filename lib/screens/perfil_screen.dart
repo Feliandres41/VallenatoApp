@@ -25,8 +25,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
     final dates = Provider.of<ProviderWeb>(context,listen: false).datosUsuario;
     final size = MediaQuery.of(context).size; // Usamos el tamaño de pantalla para adaptar anchos y altos
     final p = Provider.of<ProviderWeb>(context,listen: false);
-    final nombreImagen = p.avatarPerfil;
-    var img = p.perfil;
+    final img = p.perfil;
     return Scaffold(
       backgroundColor: const Color(0xFF060606),
       body: SafeArea(
@@ -57,13 +56,13 @@ class _PerfilScreenState extends State<PerfilScreen> {
                   //   width: size.width * 0.02,
                   // ),
                 ),
-                child: Image(image: NetworkImage(img),fit: BoxFit.cover,)
+                child: Image.asset(img, fit: BoxFit.cover)
 
               ),
               SizedBox(height: size.height * 0.025),
               //problemas de null
               Text(
-                dates['username'],
+                dates['name'] ?? 'Juan Pablo Medina',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: size.width * 0.06,
@@ -71,9 +70,18 @@ class _PerfilScreenState extends State<PerfilScreen> {
                 ),
               ),
               SizedBox(height: size.height * 0.01),
+              Text(
+                dates['role'] ?? 'Instructor',
+                style: TextStyle(
+                  color: ThemeApp.dorado,
+                  fontSize: size.width * 0.045,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(height: size.height * 0.01),
               //problemas de null
               Text(
-                dates['email'],
+                dates['email'] ?? 'juanpablo.medina@vallenato.demo',
                 style: TextStyle(
                   color: Colors.white70,
                   fontSize: size.width * 0.04,
